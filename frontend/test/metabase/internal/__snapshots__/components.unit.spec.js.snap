@@ -234,7 +234,6 @@ exports[`Card should render "normal" correctly 1`] = `
 
 exports[`CheckBox should render "Default - Off" correctly 1`] = `
 <div
-  aria-checked={undefined}
   className="flex align-center justify-center cursor-pointer"
   onClick={[Function]}
   onKeyPress={[Function]}
@@ -458,8 +457,8 @@ exports[`ClampedText should render "Default" correctly 1`] = `
       className="clamped-text--text"
     >
       Lorem ipsum 
-       
-       dolor sit amet, consectetur adipiscing elit. Cras sit amet sagittis dui. Morbi in odio laoreet, finibus erat vitae, sagittis dui. Ut at mauris eget ligula volutpat pellentesque. Integer non faucibus urna. Maecenas faucibus ornare gravida. Aliquam orci tortor, ullamcorper et vehicula accumsan, malesuada in ipsum. Nullam auctor, justo et mattis fringilla, enim ipsum aliquet nunc, quis posuere odio erat in nulla. Suspendisse elementum, est et rutrum volutpat, purus mi placerat odio, sit amet blandit nulla diam at lectus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ultricies placerat mollis. Curabitur vestibulum semper turpis, id cursus ex dignissim id. Cras efficitur sed ligula ac dictum. Curabitur hendrerit metus eget vestibulum bibendum. Cras nulla arcu, condimentum in rhoncus eu, interdum ut sapien. Cras sed molestie tellus, quis aliquet nunc. Nulla nec est eu est condimentum facilisis sit amet et ex.
+ 
+ dolor sit amet, consectetur adipiscing elit. Cras sit amet sagittis dui. Morbi in odio laoreet, finibus erat vitae, sagittis dui. Ut at mauris eget ligula volutpat pellentesque. Integer non faucibus urna. Maecenas faucibus ornare gravida. Aliquam orci tortor, ullamcorper et vehicula accumsan, malesuada in ipsum. Nullam auctor, justo et mattis fringilla, enim ipsum aliquet nunc, quis posuere odio erat in nulla. Suspendisse elementum, est et rutrum volutpat, purus mi placerat odio, sit amet blandit nulla diam at lectus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ultricies placerat mollis. Curabitur vestibulum semper turpis, id cursus ex dignissim id. Cras efficitur sed ligula ac dictum. Curabitur hendrerit metus eget vestibulum bibendum. Cras nulla arcu, condimentum in rhoncus eu, interdum ut sapien. Cras sed molestie tellus, quis aliquet nunc. Nulla nec est eu est condimentum facilisis sit amet et ex.
     </div>
   </div>
   <div
@@ -472,45 +471,45 @@ exports[`ClampedText should render "No 'See more' button when all text visible" 
 Array [
   <strong>
     A single line of text:
-</strong>,
+  </strong>,
   <div
     className="clamped-text"
->
+  >
     <div
-        className="clamped-text--clamp ClampedText__ClampedDiv-sc-1i5vub8-0 kpOVj"
+      className="clamped-text--clamp ClampedText__ClampedDiv-sc-1i5vub8-0 kpOVj"
     >
-        <div
-            className="clamped-text--text"
-        >
-            foo
-        </div>
+      <div
+        className="clamped-text--text"
+      >
+        foo
+      </div>
     </div>
     <div
-        className="clamped-text--footer"
+      className="clamped-text--footer"
     />
-</div>,
+  </div>,
   <br />,
   <strong>
     Many lines of text, but an unset \`visibleLines\` prop:
-</strong>,
+  </strong>,
   <div
     className="clamped-text"
->
+  >
     <div
-        className="clamped-text--clamp ClampedText__ClampedDiv-sc-1i5vub8-0 MvTAX"
+      className="clamped-text--clamp ClampedText__ClampedDiv-sc-1i5vub8-0 MvTAX"
     >
-        <div
-            className="clamped-text--text"
-        >
-            Lorem ipsum 
-             
-             dolor sit amet, consectetur adipiscing elit. Cras sit amet sagittis dui. Morbi in odio laoreet, finibus erat vitae, sagittis dui. Ut at mauris eget ligula volutpat pellentesque. Integer non faucibus urna. Maecenas faucibus ornare gravida. Aliquam orci tortor, ullamcorper et vehicula accumsan, malesuada in ipsum. Nullam auctor, justo et mattis fringilla, enim ipsum aliquet nunc, quis posuere odio erat in nulla. Suspendisse elementum, est et rutrum volutpat, purus mi placerat odio, sit amet blandit nulla diam at lectus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ultricies placerat mollis. Curabitur vestibulum semper turpis, id cursus ex dignissim id. Cras efficitur sed ligula ac dictum. Curabitur hendrerit metus eget vestibulum bibendum. Cras nulla arcu, condimentum in rhoncus eu, interdum ut sapien. Cras sed molestie tellus, quis aliquet nunc. Nulla nec est eu est condimentum facilisis sit amet et ex.
-        </div>
+      <div
+        className="clamped-text--text"
+      >
+        Lorem ipsum 
+ 
+ dolor sit amet, consectetur adipiscing elit. Cras sit amet sagittis dui. Morbi in odio laoreet, finibus erat vitae, sagittis dui. Ut at mauris eget ligula volutpat pellentesque. Integer non faucibus urna. Maecenas faucibus ornare gravida. Aliquam orci tortor, ullamcorper et vehicula accumsan, malesuada in ipsum. Nullam auctor, justo et mattis fringilla, enim ipsum aliquet nunc, quis posuere odio erat in nulla. Suspendisse elementum, est et rutrum volutpat, purus mi placerat odio, sit amet blandit nulla diam at lectus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ultricies placerat mollis. Curabitur vestibulum semper turpis, id cursus ex dignissim id. Cras efficitur sed ligula ac dictum. Curabitur hendrerit metus eget vestibulum bibendum. Cras nulla arcu, condimentum in rhoncus eu, interdum ut sapien. Cras sed molestie tellus, quis aliquet nunc. Nulla nec est eu est condimentum facilisis sit amet et ex.
+      </div>
     </div>
     <div
-        className="clamped-text--footer"
+      className="clamped-text--footer"
     />
-</div>,
+  </div>,
 ]
 `;
 
@@ -708,9 +707,7 @@ exports[`ColorPicker should render "" correctly 1`] = `
 >
   <a
     className="no-decoration"
-    id={undefined}
     onClick={[Function]}
-    style={undefined}
   >
     <div
       className="bordered rounded flex align-center"
@@ -744,9 +741,7 @@ exports[`ColorPicker should render "with value" correctly 1`] = `
 >
   <a
     className="no-decoration"
-    id={undefined}
     onClick={[Function]}
-    style={undefined}
   >
     <div
       className="bordered rounded flex align-center"
@@ -974,7 +969,6 @@ exports[`ModalContent should render "default" correctly 1`] = `
 >
   <div
     className="ModalContent flex-full flex flex-column relative"
-    id={undefined}
   >
     <svg
       aria-label="close icon"
@@ -1341,13 +1335,10 @@ exports[`Radio should render "vertical" correctly 1`] = `
 exports[`Select should render "default" correctly 1`] = `
 <a
   className="flex no-decoration"
-  id={undefined}
   onClick={[Function]}
-  style={undefined}
 >
   <div
     className="flex-full AdminSelect flex align-center"
-    style={undefined}
   >
     <span
       className="AdminSelect-content mr1"
@@ -1380,13 +1371,10 @@ exports[`Select should render "default" correctly 1`] = `
 exports[`Select should render "kitchen_sink" correctly 1`] = `
 <a
   className="flex no-decoration"
-  id={undefined}
   onClick={[Function]}
-  style={undefined}
 >
   <div
     className="flex-full AdminSelect flex align-center"
-    style={undefined}
   >
     <span
       className="AdminSelect-content mr1"
@@ -1423,13 +1411,10 @@ exports[`Select should render "kitchen_sink" correctly 1`] = `
 exports[`Select should render "multiple" correctly 1`] = `
 <a
   className="flex no-decoration"
-  id={undefined}
   onClick={[Function]}
-  style={undefined}
 >
   <div
     className="flex-full AdminSelect flex align-center"
-    style={undefined}
   >
     <span
       className="AdminSelect-content mr1"
@@ -1466,13 +1451,10 @@ exports[`Select should render "multiple" correctly 1`] = `
 exports[`Select should render "search" correctly 1`] = `
 <a
   className="flex no-decoration"
-  id={undefined}
   onClick={[Function]}
-  style={undefined}
 >
   <div
     className="flex-full AdminSelect flex align-center"
-    style={undefined}
   >
     <span
       className="AdminSelect-content mr1"
@@ -1505,13 +1487,10 @@ exports[`Select should render "search" correctly 1`] = `
 exports[`Select should render "sections" correctly 1`] = `
 <a
   className="flex no-decoration"
-  id={undefined}
   onClick={[Function]}
-  style={undefined}
 >
   <div
     className="flex-full AdminSelect flex align-center"
-    style={undefined}
   >
     <span
       className="AdminSelect-content mr1"
@@ -1687,7 +1666,6 @@ exports[`StackedCheckBox should render "Off - Default" correctly 1`] = `
   }
 >
   <div
-    aria-checked={undefined}
     className="flex align-center justify-center cursor-pointer"
     onClick={[Function]}
     onKeyPress={[Function]}
@@ -1704,7 +1682,6 @@ exports[`StackedCheckBox should render "Off - Default" correctly 1`] = `
     tabIndex="0"
   />
   <div
-    aria-checked={undefined}
     className="absolute flex align-center justify-center cursor-pointer"
     onClick={[Function]}
     onKeyPress={[Function]}
@@ -1837,15 +1814,15 @@ exports[`Timeline should render "Constrained width" correctly 1`] = `
         </div>
         <div>
           Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. 
-          Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not
         </div>
       </div>
     </div>
@@ -2007,15 +1984,15 @@ exports[`Timeline should render "Optional footer" correctly 1`] = `
       </div>
       <div>
         Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. 
-        Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. 
+Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not correct. Uh oh that's not
       </div>
       <div>
         
@@ -2114,7 +2091,6 @@ exports[`TokenField should render "" correctly 1`] = `
         onFocus={[Function]}
         onKeyDown={[Function]}
         onPaste={[Function]}
-        placeholder={undefined}
         size={10}
         style={
           Object {
@@ -2214,7 +2190,6 @@ exports[`TokenField should render "updateOnInputChange" correctly 1`] = `
         onFocus={[Function]}
         onKeyDown={[Function]}
         onPaste={[Function]}
-        placeholder={undefined}
         size={10}
         style={
           Object {

@@ -8,7 +8,11 @@ components.map(
     !noSnapshotTest &&
     describe(filename, () => {
       it(`should have displayName matching file name`, () => {
-        expect(component && component.displayName).toEqual(filename);
+        const componentName = component
+          ? component.displayName || component.name
+          : "";
+
+        expect(componentName.includes(filename)).toBe(true);
       });
       Object.entries(examples).map(([exampleName, element]) =>
         it(`should render "${exampleName}" correctly`, () => {
