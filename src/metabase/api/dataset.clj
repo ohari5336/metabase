@@ -35,8 +35,9 @@
 
 (defn- run-query-async
   [{:keys [database], :as query}
-   & {:keys [context export-format qp-runner]
+   & {:keys [context viz-settings export-format qp-runner]
       :or   {context       :ad-hoc
+             viz-settings  {}
              export-format :api
              qp-runner     qp/process-query-and-save-with-max-results-constraints!}}]
   (when (and (not= (:type query) "internal")
@@ -47,10 +48,11 @@
     (api/read-check Database database))
   ;; add sensible constraints for results limits on our query
   (let [source-card-id (query->source-card-id query)
-        info           {:executed-by api/*current-user-id*
-                        :context     context
-                        :card-id     source-card-id
-                        :nested?     (boolean source-card-id)}]
+        info           {:executed-by  api/*current-user-id*
+                        :context      context
+                        :card-id      source-card-id
+                        :nested?      (boolean source-card-id)
+                        :viz-settings viz-settings}]
     (binding [qp.perms/*card-id* source-card-id]
       (qp.streaming/streaming-response [context export-format]
         (qp-runner query info context)))))
@@ -85,23 +87,25 @@
 
 (api/defendpoint ^:streaming POST ["/:export-format", :export-format export-format-regex]
   "Execute a query and download the result data as a file in the specified format."
-  [export-format :as {{:keys [query]} :params}]
-  {query         su/JSONString
-   export-format ExportFormat}
-  (let [{:keys [database] :as query} (json/parse-string query keyword)]
-    (let [query (-> (assoc query :async? true)
-                    (dissoc :constraints)
-                    (update :middleware #(-> %
-                                             (dissoc :add-default-userland-constraints? :js-int-to-string?)
-                                             (assoc :skip-results-metadata? true
-                                                    :format-rows? false))))
-          info  {:executed-by api/*current-user-id*
-                 :context     (export-format->context export-format)}]
-      (run-query-async
-       query
-       :export-format export-format
-       :context       (export-format->context export-format)
-       :qp-runner     qp/process-query-and-save-execution!))))
+  [export-format :as {{:keys [query visualization_settings]} :params}]
+  {query                  su/JSONString
+   visualization_settings su/JSONString
+   export-format          ExportFormat}
+  (let [query               (json/parse-string query keyword)
+        parsed-viz-settings (json/parse-string visualization_settings keyword)
+        query (-> (assoc query
+                         :async? true
+                         :viz-settings parsed-viz-settings)
+                  (dissoc :constraints)
+                  (update :middleware #(-> %
+                                           (dissoc :add-default-userland-constraints? :js-int-to-string?)
+                                           (assoc :skip-results-metadata? true
+                                                  :format-rows? false))))]
+    (run-query-async
+     query
+     :export-format export-format
+     :context       (export-format->context export-format)
+     :qp-runner     qp/process-query-and-save-execution!)))
 
 
 ;;; ------------------------------------------------ Other Endpoints -------------------------------------------------

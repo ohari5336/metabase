@@ -95,10 +95,17 @@ const QueryDownloadWidget = ({
   </PopoverWithTrigger>
 );
 
-const UnsavedQueryButton = ({ type, result: { json_query = {} }, card }) => (
+const UnsavedQueryButton = ({
+  type,
+  result: { json_query = {} },
+  card: { visualization_settings = {} },
+}) => (
   <DownloadButton
     url={`api/dataset/${type}`}
-    params={{ query: JSON.stringify(_.omit(json_query, "constraints")) }}
+    params={{
+      query: JSON.stringify(_.omit(json_query, "constraints")),
+      visualization_settings: JSON.stringify(visualization_settings),
+    }}
     extensions={[type]}
   >
     {type}

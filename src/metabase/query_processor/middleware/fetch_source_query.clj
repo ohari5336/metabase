@@ -30,6 +30,7 @@
             [metabase.models.card :refer [Card]]
             [metabase.query-processor.interface :as i]
             [metabase.query-processor.middleware.permissions :as qp.perms]
+            [metabase.shared.models.visualization-settings :as viz]
             [metabase.util :as u]
             [metabase.util.i18n :refer [trs tru]]
             [metabase.util.schema :as su]
@@ -271,4 +272,25 @@
       (if card-id
         (binding [qp.perms/*card-id* (or card-id qp.perms/*card-id*)]
           (qp query rff context))
+        (qp query rff context)))))
+
+(defn add-card-visualization-settings
+  "Middleware that adds normalized visualization settings for a card to the metadata."
+  [qp]
+  (fn [query rff context]
+    (if-let [card-id (:card-id (:info query))]
+      ;; Saved query -- pull viz settings from DB
+      (qp
+       query
+       (fn [metadata]
+         (rff (assoc metadata
+                     :viz-settings (viz/db->norm (db/select-one-field :viz-settings Card :id card-id)))))
+       context)
+      ;; Unsaved query -- viz settings may have been inserted into query by API handler
+      (if-let [viz-settings (:viz-settings query)]
+        (qp
+         query
+         (fn [metadata]
+           (rff (assoc metadata :viz-settings (viz/db->norm viz-settings))))
+         context)
         (qp query rff context)))))

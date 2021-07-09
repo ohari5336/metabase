@@ -113,6 +113,7 @@
    #'add-timezone-info/add-timezone-info
    #'splice-params-in-response/splice-params-in-response
    #'resolve-database-and-driver/resolve-database-and-driver
+   #'fetch-source-query/add-card-visualization-settings
    #'fetch-source-query/resolve-card-id-source-tables
    #'store/initialize-store
    #'validate/validate-query
