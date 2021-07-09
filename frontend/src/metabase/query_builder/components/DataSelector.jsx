@@ -114,24 +114,35 @@ const FieldTriggerContent = ({ selectedDatabase, selectedField }) => {
 };
 
 @connect(
-  (state, ownProps) => ({
-    metadata: getMetadata(state),
-    databases:
+  (state, ownProps) => {
+    const databases =
       ownProps.databases ||
       Databases.selectors.getList(state, {
         entityQuery: ownProps.databaseQuery,
       }) ||
-      [],
-    hasFetchedDatabasesWithTablesSaved: !!Databases.selectors.getList(state, {
-      entityQuery: { include: "tables", saved: true },
-    }),
-    hasFetchedDatabasesWithSaved: !!Databases.selectors.getList(state, {
-      entityQuery: { saved: true },
-    }),
-    hasFetchedDatabasesWithTables: !!Databases.selectors.getList(state, {
-      entityQuery: { include: "tables" },
-    }),
-  }),
+      [];
+
+    const fakeSavedQuestionDatabase = databases.find(d => d.is_saved_questions);
+    databases.push({
+      ...fakeSavedQuestionDatabase,
+      isFakeModels: true,
+      name: t`Models`,
+    });
+
+    return {
+      metadata: getMetadata(state),
+      databases,
+      hasFetchedDatabasesWithTablesSaved: !!Databases.selectors.getList(state, {
+        entityQuery: { include: "tables", saved: true },
+      }),
+      hasFetchedDatabasesWithSaved: !!Databases.selectors.getList(state, {
+        entityQuery: { saved: true },
+      }),
+      hasFetchedDatabasesWithTables: !!Databases.selectors.getList(state, {
+        entityQuery: { include: "tables" },
+      }),
+    };
+  },
   {
     fetchDatabases: databaseQuery => Databases.actions.fetchList(databaseQuery),
     fetchSchemas: databaseId => Schemas.actions.fetchList({ dbId: databaseId }),
@@ -579,7 +590,7 @@ export class UnconnectedDataSelector extends Component {
     this.setState({ isSavedQuestionPickerShown: true });
 
   onChangeDatabase = async database => {
-    if (database.is_saved_questions) {
+    if (database.is_saved_questions && !database.isFakeModels) {
       this.showSavedQuestionPicker();
       return;
     }
@@ -898,23 +909,29 @@ const DatabaseSchemaPicker = ({
     return <DataSelectorLoading />;
   }
 
-  const sections = databases.map(database => ({
-    name: database.is_saved_questions ? t`Saved Questions` : database.name,
-    items:
-      !database.is_saved_questions && database.schemas.length > 1
-        ? database.schemas.map(schema => ({
-            schema,
-            name: schema.displayName(),
-          }))
-        : [],
-    className: database.is_saved_questions ? "bg-light" : null,
-    icon: database.is_saved_questions ? "all" : "database",
-    loading:
-      selectedDatabase &&
-      selectedDatabase.id === database.id &&
-      database.schemas.length === 0 &&
-      isLoading,
-  }));
+  const sections = databases.map(database => {
+    return {
+      name: database.is_saved_questions
+        ? database.isFakeModels
+          ? t`Models`
+          : t`Saved Questions`
+        : database.name,
+      items:
+        !database.is_saved_questions && database.schemas.length > 1
+          ? database.schemas.map(schema => ({
+              schema,
+              name: schema.displayName(),
+            }))
+          : [],
+      className: database.is_saved_questions ? "bg-light" : null,
+      icon: database.is_saved_questions ? "all" : "database",
+      loading:
+        selectedDatabase &&
+        selectedDatabase.id === database.id &&
+        database.schemas.length === 0 &&
+        isLoading,
+    };
+  });
 
   let openSection = selectedSchema
     ? databases.findIndex(db => db.id === selectedSchema.database.id)
@@ -983,7 +1000,9 @@ const TablePicker = ({
         onClick={onBack}
       >
         {onBack && <Icon name="chevronleft" size={18} />}
-        <span className="ml1 text-wrap">{selectedDatabase.name}</span>
+        <span className="ml1 text-wrap">
+          {isSavedQuestionList ? t`Model` : selectedDatabase.name}
+        </span>
       </span>
       {selectedSchema && selectedSchema.name && schemas.length > 1 && (
         <span className="ml1 text-wrap text-slate">
@@ -1005,6 +1024,19 @@ const TablePicker = ({
         loading: tables.length === 0 && isLoading,
       },
     ];
+
+    if (isSavedQuestionList) {
+      sections[0].items = tables
+        .filter(table => {
+          return table.displayName().startsWith("MODEL: ");
+        })
+        .map(table => ({
+          name: table.displayName(),
+          table: table,
+          database: selectedDatabase,
+        }));
+    }
+
     return (
       <div style={{ width: 300, overflowY: "auto" }}>
         <AccordionList
@@ -1027,21 +1059,6 @@ const TablePicker = ({
           }
           showItemArrows={hasNextStep}
         />
-        {isSavedQuestionList && (
-          <div className="bg-light p2 text-centered border-top">
-            {t`Is a question missing?`}
-            <ExternalLink
-              href={MetabaseSettings.docsUrl(
-                "users-guide/custom-questions",
-                "picking-your-starting-data",
-              )}
-              target="_blank"
-              className="block link"
-            >
-              {t`Learn more about nested queries`}
-            </ExternalLink>
-          </div>
-        )}
       </div>
     );
   } else {
