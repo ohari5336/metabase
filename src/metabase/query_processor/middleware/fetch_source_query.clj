@@ -280,6 +280,7 @@
   (fn [query rff context]
     (if-let [card-id (:card-id (:info query))]
       ;; Saved query -- pull viz settings from DB
+      ;; TODO: only do this for exports
       (qp
        query
        (fn [metadata]

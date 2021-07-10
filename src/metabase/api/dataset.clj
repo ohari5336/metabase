@@ -35,9 +35,8 @@
 
 (defn- run-query-async
   [{:keys [database], :as query}
-   & {:keys [context viz-settings export-format qp-runner]
+   & {:keys [context export-format qp-runner]
       :or   {context       :ad-hoc
-             viz-settings  {}
              export-format :api
              qp-runner     qp/process-query-and-save-with-max-results-constraints!}}]
   (when (and (not= (:type query) "internal")
@@ -51,8 +50,7 @@
         info           {:executed-by  api/*current-user-id*
                         :context      context
                         :card-id      source-card-id
-                        :nested?      (boolean source-card-id)
-                        :viz-settings viz-settings}]
+                        :nested?      (boolean source-card-id)}]
     (binding [qp.perms/*card-id* source-card-id]
       (qp.streaming/streaming-response [context export-format]
         (qp-runner query info context)))))
