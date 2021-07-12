@@ -10,6 +10,13 @@ executors:
     working_directory: /home/circleci/metabase/metabase/
     docker:
       - image: metabase/ci:circleci-java-11-lein-2.9.6-clj-1.10.3.855-07-1-2021
+  
+  # using a different executor for the frontend to boost the RAM of this step. Use this executor carefully as the "large" resource class eats more credits
+  metabase-ci-fe:
+    working_directory: /home/circleci/metabase/metabase/
+    resource_class: large
+    docker:
+      - image: metabase/ci:circleci-java-11-lein-2.9.6-clj-1.10.3.855-07-1-2021
 
   java-8:
     working_directory: /home/circleci/metabase/metabase/
@@ -803,7 +810,7 @@ jobs:
   build-uberjar-frontend:
     parameters:
       <<: *Params
-    executor: metabase-ci
+    executor: metabase-ci-fe
     steps:
       - attach-workspace
       - run-on-change:
