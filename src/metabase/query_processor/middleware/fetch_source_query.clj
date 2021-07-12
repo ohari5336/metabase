@@ -280,7 +280,7 @@
   [qp]
   (fn [query rff context]
     (if (contains? #{:json-download :csv-download :xlsx-download} (-> query :info :context))
-      (let [viz-settings            (if-let [card-id (-> query :info)]
+      (let [viz-settings            (if-let [card-id (-> query :info :card-id)]
                                       ;; For saved cards, fetch viz settings from DB. Otherwise, viz settings are passed
                                       ;; from the frontend and bundled into the query by the API handler.
                                       (db/select-one-field :visualization_settings Card :id card-id)

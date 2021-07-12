@@ -49,7 +49,6 @@
   (let [source-card-id (query->source-card-id query)
         info           {:executed-by   api/*current-user-id*
                         :context       context
-                        :export-format export-format
                         :card-id       source-card-id
                         :nested?       (boolean source-card-id)}]
     (binding [qp.perms/*card-id* source-card-id]
