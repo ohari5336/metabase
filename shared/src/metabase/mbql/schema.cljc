@@ -1158,7 +1158,7 @@
    (s/optional-key :dashboard-id)  (s/maybe helpers/IntGreaterThanZero)
    (s/optional-key :pulse-id)      (s/maybe helpers/IntGreaterThanZero)
    (s/optional-key :nested?)       (s/maybe s/Bool)
-   (s/optional-key :export-format) (s/maybe s/Any) ; TODO
+   (s/optional-key :export-format) (s/maybe s/Keyword)
    ;; `:hash` gets added automatically by `process-query-and-save-execution!`, so don't try passing
    ;; these in yourself. In fact, I would like this a lot better if we could take these keys out of `:info` entirely
    ;; and have the code that saves QueryExceutions figure out their values when it goes to save them
