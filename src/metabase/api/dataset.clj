@@ -84,6 +84,16 @@
      (api/defendpoint POST [\"/:export-format\", :export-format export-format-regex]"
   (re-pattern (str "(" (str/join "|" (map u/qualified-name (qp.streaming/export-formats))) ")")))
 
+(def ^:private column-ref-regex #"\[\"ref\",\[\"field\",\d+,null\]\]")
+
+(defn- parse-viz-setting-key
+  "Key function for parsing JSON visualization settings into the DB form. Converts most keys to
+  keywords, but leaves column references as strings."
+   [json-key]
+   (if (re-matches column-ref-regex json-key)
+     json-key
+     (keyword json-key)))
+
 (api/defendpoint ^:streaming POST ["/:export-format", :export-format export-format-regex]
   "Execute a query and download the result data as a file in the specified format."
   [export-format :as {{:keys [query visualization_settings]} :params}]
@@ -91,7 +101,7 @@
    visualization_settings su/JSONString
    export-format          ExportFormat}
   (let [query               (json/parse-string query keyword)
-        parsed-viz-settings (json/parse-string visualization_settings keyword)
+        parsed-viz-settings (json/parse-string visualization_settings parse-viz-setting-key)
         query (-> (assoc query
                          :async? true
                          :viz-settings parsed-viz-settings)

@@ -322,7 +322,7 @@
                :from-field-id     int?
                :to-entity-type    ::entity-type
                :to-entity-id      int?
-               :parameter-mapping (s/? ::parameter-mapping) )
+               :parameter-mapping (s/? ::parameter-mapping))
   :ret  ::click-behavior)
 
 (defn fk-parameter-mapping

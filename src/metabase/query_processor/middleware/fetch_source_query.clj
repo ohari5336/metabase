@@ -274,25 +274,15 @@
           (qp query rff context))
         (qp query rff context)))))
 
-(defn add-card-visualization-settings
-  "Middleware that adds normalized visualization settings for a card to the metadata."
+(defn add-card-visualization-settings-for-export
+  "Middleware that adds normalized visualization settings for a card to the metadata,
+  so that data can be formatted in exports."
   [qp]
   (fn [query rff context]
-    (if (contains? [:json-download :csv-download :xlsx-download] (-> query :info :context))
-      (if-let [card-id (-> query :info :card-id)]
-        ;; Saved query -- pull viz settings from DB
-        (qp
-         query
-         (fn [metadata]
-           (rff (assoc metadata
-                       :viz-settings (viz/db->norm (db/select-one-field :viz-settings Card :id card-id)))))
-         context)
-        ;; Unsaved query -- viz settings may have been inserted into query by API handler
-        (if-let [viz-settings (:viz-settings query)]
-          (qp
-           query
-           (fn [metadata]
-             (rff (assoc metadata :viz-settings (viz/db->norm viz-settings))))
-           context)
-          (qp query rff context)))
+    (if (contains? #{:json-download :csv-download :xlsx-download} (-> query :info :context))
+      (let [viz-settings            (if-let [card-id (-> query :info)]
+                                       (db/select-one-field :visualization_settings Card :id card-id)
+                                       (-> query :viz-settings))
+            normalized-viz-settings (viz/db->norm viz-settings)]
+        (qp query (fn [metadata] (rff (assoc metadata :viz-settings normalized-viz-settings))) context))
       (qp query rff context))))
