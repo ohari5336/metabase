@@ -22,16 +22,25 @@
 (defn- order-viz-settings
   [viz-settings cols]
   (map
-   (fn [{:keys [id]}] (get-in viz-settings [::mb.viz/column-settings {::mb.viz/field-id id}]))
+   (fn [col]
+     (cond
+       (contains? col :id)
+       (get-in viz-settings [::mb.viz/column-settings {::mb.viz/field-id (:id col)}])
+
+       (contains? col :name)
+       (get-in viz-settings [::mb.viz/column-settings {::mb.viz/column-name (:name col)}])))
    cols))
 
 (defn- streaming-rff [results-writer]
   (fn [initial-metadata]
     (let [row-count            (volatile! 0)
+          cols                 (:cols initial-metadata)
           card-viz-settings    (:viz-settings initial-metadata)
-          table-viz-settings   (mb.viz/db-table-settings->norm (:cols initial-metadata))
+          table-viz-settings   (if (every? #(contains? % :settings) cols)
+                                 (mb.viz/db-table-settings->norm cols)
+                                 {})
           merged-viz-settings  (m/deep-merge table-viz-settings card-viz-settings)
-          ordered-viz-settings (order-viz-settings merged-viz-settings (:cols initial-metadata))]
+          ordered-viz-settings (order-viz-settings merged-viz-settings cols)]
       (fn
         ([]
          (u/prog1 {:data initial-metadata}
