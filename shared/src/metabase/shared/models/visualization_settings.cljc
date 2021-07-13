@@ -603,10 +603,7 @@
   of a table that are defined in the data model rather than on a specific card."
   [columns]
   (let [db-form {:column_settings
-                 (into {}
-                       (map
-                        (fn
-                          [{:keys [id settings]}]
-                          {(encode-json-string ["ref" ["field" id nil]]) settings})
-                        columns))}]
+                 (into {} (map (fn [{:keys [id settings]}]
+                                   {(encode-json-string ["ref" ["field" id nil]]) settings})
+                               columns))}]
     (db->norm db-form)))
