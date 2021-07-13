@@ -1,11 +1,13 @@
 (ns metabase.query-processor.streaming
   (:require [clojure.core.async :as a]
+            [medley.core :as m]
             [metabase.async.streaming-response :as streaming-response]
             [metabase.query-processor.context :as context]
             [metabase.query-processor.streaming.csv :as streaming.csv]
             [metabase.query-processor.streaming.interface :as i]
             [metabase.query-processor.streaming.json :as streaming.json]
             [metabase.query-processor.streaming.xlsx :as streaming.xlsx]
+            [metabase.shared.models.visualization-settings :as mb.viz]
             [metabase.util :as u])
   (:import clojure.core.async.impl.channels.ManyToManyChannel
            java.io.OutputStream
@@ -17,9 +19,19 @@
          streaming.json/keep-me
          streaming.xlsx/keep-me)
 
+(defn- order-viz-settings
+  [viz-settings cols]
+  (map
+   (fn [{:keys [id]}] (get-in viz-settings [::mb.viz/column-settings {::mb.viz/field-id id}]))
+   cols))
+
 (defn- streaming-rff [results-writer]
   (fn [initial-metadata]
-    (let [row-count (volatile! 0)]
+    (let [row-count            (volatile! 0)
+          card-viz-settings    (:viz-settings initial-metadata)
+          table-viz-settings   (mb.viz/db-table-settings->norm (:cols initial-metadata))
+          merged-viz-settings  (m/deep-merge table-viz-settings card-viz-settings)
+          ordered-viz-settings (order-viz-settings merged-viz-settings (:cols initial-metadata))]
       (fn
         ([]
          (u/prog1 {:data initial-metadata}

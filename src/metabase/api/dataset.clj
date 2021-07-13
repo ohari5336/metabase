@@ -83,7 +83,7 @@
      (api/defendpoint POST [\"/:export-format\", :export-format export-format-regex]"
   (re-pattern (str "(" (str/join "|" (map u/qualified-name (qp.streaming/export-formats))) ")")))
 
-(def ^:private column-ref-regex #"\[\"ref\",\[\"field\",\d+,null\]\]")
+(def ^:private column-ref-regex #"\[\"ref\",\[(?:\"field\",\d+,null|\"expression\",\".+\")\]\]")
 
 (defn- parse-viz-setting-key
   "Key function for parsing JSON visualization settings into the DB form. Converts most keys to

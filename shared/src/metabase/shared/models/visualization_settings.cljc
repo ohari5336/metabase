@@ -10,10 +10,10 @@
   ex:
 
   ```
-  (-> (mb.viz/from-db-form (:visualization_settings my-card))
+  (-> (mb.viz/db->norm (:visualization_settings my-card))
       tweak-viz-settings
       tweak-more-viz-settings
-      mb.viz/db-form)
+      mb.viz/norm->db)
   ```
 
   In general, conversion functions in this namespace (i.e. those that convert various pieces from one form to the other)
@@ -371,18 +371,25 @@
   (set/map-invert db->norm-click-behavior-keys))
 
 (def ^:private db->norm-column-settings-keys
-  {:column_title      ::column-title
-   :date_style        ::date-style
-   :date_abbreviate   ::date-abbreviate
-   :time_style        ::time-style
-   :time_enabled      ::time-enabled
-   :decimals          ::decimals
-   :number_separators ::number-separators
-   :number_style      ::number-style
-   :prefix            ::prefix
-   :suffix            ::suffix
-   :view_as           ::view-as
-   :link_text         ::link-text})
+  {:column_title       ::column-title
+   :date_style         ::date-style
+   :date_separator     ::date-separator
+   :date_abbreviate    ::date-abbreviate
+   :time_enabled       ::time-enabled
+   :time_style         ::time-style
+   :number_style       ::number-style
+   :currency           ::currency
+   :currency_style     ::currency-style
+   :currency_in_header ::currency-in-header
+   :number_separators  ::number-separators
+   :decimals           ::decimals
+   :scale              ::scale
+   :prefix             ::prefix
+   :suffix             ::suffix
+   :view_as            ::view-as
+   :link_text          ::link-text
+   :link_url           ::link-url
+   :show_mini_bar      ::show-mini-bar})
 
 (def ^:private norm->db-column-settings-keys
   (set/map-invert db->norm-column-settings-keys))
@@ -588,3 +595,18 @@
     (::click-behavior settings)  (-> ; from cond->
                                      (assoc :click_behavior (norm->db-click-behavior-value (::click-behavior settings)))
                                      (dissoc ::click-behavior))))
+
+(defn db-table-settings->norm
+  "Converts a sequence of maps containing :id and :settings keys into the same
+  format as normalized visualization settings. This can be used on the contents
+  of the `metabase_field` table in the app DB, to access the visualization settings
+  of a table that are defined in the data model rather than on a specific card."
+  [columns]
+  (let [db-form {:column_settings
+                 (into {}
+                       (map
+                        (fn
+                          [{:keys [id settings]}]
+                          {(encode-json-string ["ref" ["field" id nil]]) settings})
+                        columns))}]
+    (db->norm db-form)))
