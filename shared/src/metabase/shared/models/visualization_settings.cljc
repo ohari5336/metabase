@@ -595,15 +595,3 @@
     (::click-behavior settings)  (-> ; from cond->
                                      (assoc :click_behavior (norm->db-click-behavior-value (::click-behavior settings)))
                                      (dissoc ::click-behavior))))
-
-(defn db-table-settings->norm
-  "Converts a sequence of maps containing :id and :settings keys into the same
-  format as normalized visualization settings. This can be used on the contents
-  of the `metabase_field` table in the app DB, to access the visualization settings
-  of a table that are defined in the data model rather than on a specific card."
-  [columns]
-  (let [db-form {:column_settings
-                 (into {} (map (fn [{:keys [id settings]}]
-                                   {(encode-json-string ["ref" ["field" id nil]]) settings})
-                               columns))}]
-    (db->norm db-form)))

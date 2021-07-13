@@ -1,5 +1,6 @@
 (ns metabase.query-processor.streaming
-  (:require [clojure.core.async :as a]
+  (:require [cheshire.core :as json]
+            [clojure.core.async :as a]
             [medley.core :as m]
             [metabase.async.streaming-response :as streaming-response]
             [metabase.query-processor.context :as context]
@@ -31,16 +32,24 @@
        (get-in viz-settings [::mb.viz/column-settings {::mb.viz/column-name (:name col)}])))
    cols))
 
+(defn- normalize-column-viz-settings
+  [cols]
+  (if (every? #(contains? % :settings) cols)
+    (let [db-form {:column_settings
+                   (into {} (map (fn [{:keys [id settings]}]
+                                     {(json/encode ["ref" ["field" id nil]]) settings})
+                                 cols))}]
+      (mb.viz/db->norm db-form))
+    {}))
+
 (defn- streaming-rff [results-writer]
   (fn [initial-metadata]
     (let [row-count            (volatile! 0)
-          cols                 (:cols initial-metadata)
           card-viz-settings    (:viz-settings initial-metadata)
-          table-viz-settings   (if (every? #(contains? % :settings) cols)
-                                 (mb.viz/db-table-settings->norm cols)
-                                 {})
+          cols                 (:cols initial-metadata)
+          table-viz-settings   (normalize-column-viz-settings cols)
           merged-viz-settings  (m/deep-merge table-viz-settings card-viz-settings)
-          ordered-viz-settings (order-viz-settings merged-viz-settings cols)]
+          ordered-viz-settings (order-viz-settings merged-viz-settings (:cols initial-metadata))]
       (fn
         ([]
          (u/prog1 {:data initial-metadata}
