@@ -143,14 +143,13 @@ describeWithToken("formatting > whitelabel", () => {
       cy.signOut();
       cy.visit("/");
 
+      cy.findByText("Sign in to Metabase");
       // Note that if we have modified the logo, the entire background turns the brand color.
       // But if we _haven't_, as is the case now, then the existing logo is branded
       // As is the "Remember me" and "Sign in" inputs
-      cy.get(".Icon.text-brand").should(
-        "have.css",
-        "color",
-        `rgb(${colors.primary.rgb.join(", ")})`,
-      );
+      cy.get(".Icon.text-brand")
+        .should("be.visible")
+        .and("have.css", "color", `rgb(${colors.primary.rgb.join(", ")})`);
 
       cy.findByLabelText("Email address").type("some@email.test");
       cy.findByLabelText("Password").type("1234");
