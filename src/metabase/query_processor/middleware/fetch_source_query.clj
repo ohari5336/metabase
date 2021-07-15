@@ -30,7 +30,6 @@
             [metabase.models.card :refer [Card]]
             [metabase.query-processor.interface :as i]
             [metabase.query-processor.middleware.permissions :as qp.perms]
-            [metabase.shared.models.visualization-settings :as viz]
             [metabase.util :as u]
             [metabase.util.i18n :refer [trs tru]]
             [metabase.util.schema :as su]
