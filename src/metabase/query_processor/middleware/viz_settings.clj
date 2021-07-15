@@ -1,9 +1,9 @@
 (ns metabase.query-processor.middleware.viz-settings
-  (:require [toucan.db :as db]
+  (:require [medley.core :as m]
             [metabase.models.card :refer [Card]]
             [metabase.query-processor.store :as qp.store]
             [metabase.shared.models.visualization-settings :as mb.viz]
-            [medley.core :as m]))
+            [toucan.db :as db]))
 
 (defn- normalize-field-settings
   [id settings]

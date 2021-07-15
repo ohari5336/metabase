@@ -529,7 +529,7 @@
           (:column_settings vs)
           (assoc ::column-settings (->> (:column_settings vs)
                                         db->norm-column-settings))
-    
+
           ;; click behavior key at top level; ex: non-table card
           (:click_behavior vs)
           (assoc ::click-behavior (db->norm-click-behavior (:click_behavior vs)))
