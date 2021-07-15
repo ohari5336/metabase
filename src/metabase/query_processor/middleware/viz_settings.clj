@@ -18,7 +18,7 @@
               qp.store/field
               :settings
               (#(normalize-field-settings id %))
-              (#(m/deep-merge % (select-keys column-settings {::mb.viz/field-id id})))))
+              (#(m/deep-merge % (select-keys column-settings [{::mb.viz/field-id id}])))))
    fields))
 
 (defn update-viz-settings
@@ -29,17 +29,17 @@
                                       ;; For saved cards, fetch viz settings from DB. Otherwise, viz settings are passed
                                       ;; from the frontend and bundled into the query by the API handler.
                                       (mb.viz/db->norm (db/select-one-field :visualization_settings Card :id card-id))
-                                      (-> query :viz-settings))]
+                                      (-> query :viz-settings))
+            column-settings      (::mb.viz/column-settings viz-settings)]
         (if-let [fields (-> query :query :fields)]
-          (let [column-settings      (::mb.viz/column-settings viz-settings)
-                updated-viz-settings (update-card-viz-settings fields column-settings)]
-            (def my-updated-viz-settings updated-viz-settings)
-            (comment (clojure.pprint/pprint my-updated-viz-settings))
+          ;; Non-native query
+          (let [updated-viz-settings (update-card-viz-settings fields column-settings)]
             (qp query (fn [metadata] (rff (assoc metadata :viz-settings updated-viz-settings))) context))
           ;; Native query
-          (let [column-names (-> viz-settings :table.columns)]
-            ;; (-> viz-settings :table.columns) contains names of cols in order
-            ;; Iterate over these and look up viz settings in column-settings
-            (qp query rff context)))
-        (qp query (fn [metadata] (rff (assoc metadata :viz-settings viz-settings))) context))
+          (let [columns (-> viz-settings :table.columns)
+                updated-viz-settings (map (fn [column] (-> column
+                                                           :name
+                                                           (#(select-keys column-settings [{::mb.viz/column-name %}]))))
+                                          columns)]
+            (qp query (fn [metadata] (rff (assoc metadata :viz-settings updated-viz-settings))) context))))
       (qp query rff context))))

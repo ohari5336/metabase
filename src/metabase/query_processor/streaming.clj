@@ -21,8 +21,6 @@
   (fn [initial-metadata]
     (let [row-count    (volatile! 0)
           viz-settings (:viz-settings initial-metadata)]
-      (def my-card-viz-settings viz-settings)
-      (comment (clojure.pprint/pprint my-card-viz-settings))
       (fn
         ([]
          (u/prog1 {:data initial-metadata}
