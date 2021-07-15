@@ -54,6 +54,7 @@
             [metabase.query-processor.middleware.store :as store]
             [metabase.query-processor.middleware.upgrade-field-literals :as upgrade-field-literals]
             [metabase.query-processor.middleware.validate :as validate]
+            [metabase.query-processor.middleware.viz-settings :as viz-settings]
             [metabase.query-processor.middleware.validate-temporal-bucketing :as validate-temporal-bucketing]
             [metabase.query-processor.middleware.wrap-value-literals :as wrap-value-literals]
             [metabase.query-processor.reducible :as qp.reducible]
@@ -83,6 +84,7 @@
    #'validate-temporal-bucketing/validate-temporal-bucketing
    #'auto-parse-filter-values/auto-parse-filter-values
    #'wrap-value-literals/wrap-value-literals
+   #'viz-settings/update-viz-settings
    #'annotate/add-column-info
    #'perms/check-query-permissions
    #'pre-alias-ags/pre-alias-aggregations
@@ -117,7 +119,6 @@
    #'store/initialize-store
    #'validate/validate-query
    #'normalize/normalize
-   #'fetch-source-query/add-card-visualization-settings-for-export
    #'add-rows-truncated/add-rows-truncated
    (resolve 'ee.audit/handle-internal-queries)
    #'results-metadata/record-and-return-metadata!])

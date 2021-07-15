@@ -501,12 +501,21 @@
       (set/rename-keys db->norm-click-behavior-keys)))
 
 (defn- db->norm-column-settings-entry
-  "Converts a :column_settings DB form to qualified form. Does the opposite of
+  "Converts the DB form of a :column_settings entry value to its normalized form. Does the opposite of
   `norm->db-column-settings-entry`."
   [m k v]
   (case k
     :click_behavior (assoc m ::click-behavior (db->norm-click-behavior v))
     (assoc m (db->norm-column-settings-keys k) v)))
+
+(defn db->norm-column-settings
+  "Converts a :column_settings DB form to its normalized form."
+  [settings]
+  (m/map-kv (fn [k v]
+              (let [k1 (parse-db-column-ref k)
+                    v1 (reduce-kv db->norm-column-settings-entry {} v)]
+                [k1 v1]))
+            settings))
 
 (defn db->norm
   "Converts a DB form of visualization settings (i.e. map with key `:visualization_settings`) into the equivalent
@@ -519,11 +528,8 @@
           ;; column_settings at top level; ex: table card
           (:column_settings vs)
           (assoc ::column-settings (->> (:column_settings vs)
-                                        (m/map-kv (fn [k v]
-                                                    (let [k1 (parse-db-column-ref k)
-                                                          v1 (reduce-kv db->norm-column-settings-entry {} v)]
-                                                      [k1 v1])))))
-
+                                        db->norm-column-settings))
+    
           ;; click behavior key at top level; ex: non-table card
           (:click_behavior vs)
           (assoc ::click-behavior (db->norm-click-behavior (:click_behavior vs)))
@@ -562,6 +568,7 @@
   (case k
     ::click-behavior (assoc m :click_behavior (norm->db-click-behavior v))
     (assoc m (norm->db-column-settings-keys k) v)))
+
 
 (defn norm->db-column-ref
   "Creates the DB form of a column ref (i.e. the key in the column settings map) for the given normalized args. Either

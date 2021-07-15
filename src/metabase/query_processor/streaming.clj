@@ -1,14 +1,11 @@
 (ns metabase.query-processor.streaming
-  (:require [cheshire.core :as json]
-            [clojure.core.async :as a]
-            [medley.core :as m]
+  (:require [clojure.core.async :as a]
             [metabase.async.streaming-response :as streaming-response]
             [metabase.query-processor.context :as context]
             [metabase.query-processor.streaming.csv :as streaming.csv]
             [metabase.query-processor.streaming.interface :as i]
             [metabase.query-processor.streaming.json :as streaming.json]
             [metabase.query-processor.streaming.xlsx :as streaming.xlsx]
-            [metabase.shared.models.visualization-settings :as mb.viz]
             [metabase.util :as u])
   (:import clojure.core.async.impl.channels.ManyToManyChannel
            java.io.OutputStream
@@ -20,36 +17,12 @@
          streaming.json/keep-me
          streaming.xlsx/keep-me)
 
-(defn- order-viz-settings
-  [viz-settings cols]
-  (map
-   (fn [col]
-     (cond
-       (contains? col :id)
-       (get-in viz-settings [::mb.viz/column-settings {::mb.viz/field-id (:id col)}])
-
-       (contains? col :name)
-       (get-in viz-settings [::mb.viz/column-settings {::mb.viz/column-name (:name col)}])))
-   cols))
-
-(defn- normalize-column-viz-settings
-  [cols]
-  (if (every? #(contains? % :settings) cols)
-    (let [db-form {:column_settings
-                   (into {} (map (fn [{:keys [id settings]}]
-                                     {(json/encode ["ref" ["field" id nil]]) settings})
-                                 cols))}]
-      (mb.viz/db->norm db-form))
-    {}))
-
 (defn- streaming-rff [results-writer]
   (fn [initial-metadata]
-    (let [row-count            (volatile! 0)
-          card-viz-settings    (:viz-settings initial-metadata)
-          cols                 (:cols initial-metadata)
-          table-viz-settings   (normalize-column-viz-settings cols)
-          merged-viz-settings  (m/deep-merge table-viz-settings card-viz-settings)
-          ordered-viz-settings (order-viz-settings merged-viz-settings (:cols initial-metadata))]
+    (let [row-count    (volatile! 0)
+          viz-settings (:viz-settings initial-metadata)]
+      (def my-card-viz-settings viz-settings)
+      (comment (clojure.pprint/pprint my-card-viz-settings))
       (fn
         ([]
          (u/prog1 {:data initial-metadata}

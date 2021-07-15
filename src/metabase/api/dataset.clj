@@ -18,7 +18,8 @@
             [metabase.util :as u]
             [metabase.util.i18n :refer [trs tru]]
             [metabase.util.schema :as su]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [metabase.shared.models.visualization-settings :as mb.viz]))
 
 ;;; -------------------------------------------- Running a Query Normally --------------------------------------------
 
@@ -83,6 +84,8 @@
      (api/defendpoint POST [\"/:export-format\", :export-format export-format-regex]"
   (re-pattern (str "(" (str/join "|" (map u/qualified-name (qp.streaming/export-formats))) ")")))
 
+
+;; TODO can these be moved metabase.shared.models.visualization-settings?
 (def ^:private column-ref-regex #"\[\"ref\",\[(?:\"field\",\d+,null|\"expression\",\".+\")\]\]")
 
 (defn- parse-viz-setting-key
@@ -99,11 +102,11 @@
   {query                  su/JSONString
    visualization_settings su/JSONString
    export-format          ExportFormat}
-  (let [query               (json/parse-string query keyword)
-        parsed-viz-settings (json/parse-string visualization_settings parse-viz-setting-key)
+  (let [query        (json/parse-string query keyword)
+        viz-settings (mb.viz/db->norm (json/parse-string visualization_settings parse-viz-setting-key))
         query (-> (assoc query
                          :async? true
-                         :viz-settings parsed-viz-settings)
+                         :viz-settings viz-settings)
                   (dissoc :constraints)
                   (update :middleware #(-> %
                                            (dissoc :add-default-userland-constraints? :js-int-to-string?)

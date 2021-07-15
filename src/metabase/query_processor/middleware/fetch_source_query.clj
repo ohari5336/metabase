@@ -273,18 +273,3 @@
         (binding [qp.perms/*card-id* (or card-id qp.perms/*card-id*)]
           (qp query rff context))
         (qp query rff context)))))
-
-(defn add-card-visualization-settings-for-export
-  "Middleware that adds normalized visualization settings for a card to the metadata,
-  so that data can be formatted in exports."
-  [qp]
-  (fn [query rff context]
-    (if (contains? #{:json-download :csv-download :xlsx-download} (-> query :info :context))
-      (let [viz-settings            (if-let [card-id (-> query :info :card-id)]
-                                      ;; For saved cards, fetch viz settings from DB. Otherwise, viz settings are passed
-                                      ;; from the frontend and bundled into the query by the API handler.
-                                      (db/select-one-field :visualization_settings Card :id card-id)
-                                      (-> query :viz-settings))
-            normalized-viz-settings (viz/db->norm viz-settings)]
-        (qp query (fn [metadata] (rff (assoc metadata :viz-settings normalized-viz-settings))) context))
-      (qp query rff context))))
