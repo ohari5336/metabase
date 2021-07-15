@@ -15,11 +15,11 @@
             [metabase.query-processor.pivot :as pivot]
             [metabase.query-processor.streaming :as qp.streaming]
             [metabase.query-processor.util :as qputil]
+            [metabase.shared.models.visualization-settings :as mb.viz]
             [metabase.util :as u]
             [metabase.util.i18n :refer [trs tru]]
             [metabase.util.schema :as su]
-            [schema.core :as s]
-            [metabase.shared.models.visualization-settings :as mb.viz]))
+            [schema.core :as s]))
 
 ;;; -------------------------------------------- Running a Query Normally --------------------------------------------
 

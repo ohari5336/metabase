@@ -10,7 +10,7 @@
   (mb.viz/db->norm-column-settings {(mb.viz/norm->db-column-ref {::mb.viz/field-id id}) settings}))
 
 (defn- update-card-viz-settings
-  "For each field, fetch its settings from the QP store, convert the settings into the normalized form 
+  "For each field, fetch its settings from the QP store, convert the settings into the normalized form
   for visualization settings, and then merge in the card-level column settings."
   [fields column-settings]
   (map (fn [[_ id _]]
@@ -22,6 +22,8 @@
    fields))
 
 (defn update-viz-settings
+  "WIP"
+  ;; TODO write docstring
   [qp]
   (fn [query rff context]
     (if (contains? #{:json-download :csv-download :xlsx-download} (-> query :info :context))
